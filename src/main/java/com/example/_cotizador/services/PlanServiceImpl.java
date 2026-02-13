@@ -53,7 +53,7 @@ public class PlanServiceImpl implements PlanService {
             }
         }
 
-        response.put("mensaje", "✅ Proceso finalizado: " + nuevos + " nuevos, " + actualizados + " actualizados.");
+        response.put("mensaje", "✅ Proceso finalizado: " + nuevos + " nuevos planes agregados, " + actualizados + " actualizados.");
         response.put("status", "ok");
         return response;
     }
