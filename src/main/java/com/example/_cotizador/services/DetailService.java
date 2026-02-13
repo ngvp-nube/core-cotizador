@@ -3,12 +3,12 @@ package com.example._cotizador.services;
 import com.example._cotizador.dto.DetallePlanDto;
 import com.example._cotizador.entity.DetallePlan;
 import jakarta.transaction.Transactional;
-
 import java.util.List;
 import java.util.Optional;
-import org.springframework.data.domain.Page;
 
 public interface DetailService {
+
+    // --- SOLO MÉTODOS DE DETALLE PLAN (PDFs) ---
 
     DetallePlan saveDetallePlan(DetallePlanDto dto);
 
@@ -23,7 +23,5 @@ public interface DetailService {
     void deleteDetallePlan(Long id);
 
     @Transactional
-    @org.springframework.transaction.annotation.Transactional
     List<DetallePlan> saveDetallePlansMasivo(List<DetallePlanDto> dtos);
 }
-
