@@ -4,9 +4,11 @@ import com.example._cotizador.dto.PlanComercialDto;
 import com.example._cotizador.entity.PlanComercial;
 import com.example._cotizador.repository.PlanComercialRepository;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 import java.util.ArrayList;
-import java.util.HashMap; // Importante para el Map de respuesta
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -21,78 +23,110 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    public Map<String, Object> cargaMasiva(List<PlanComercialDto> planesDto) {
-        Map<String, Object> response = new HashMap<>();
-        int nuevos = 0;
-        int actualizados = 0;
-        int errores = 0;
-
-        for (PlanComercialDto dto : planesDto) {
-            try {
-                if (dto.getCodigoPlan() == null || dto.getCodigoPlan().trim().isEmpty()) {
-                    continue;
-                }
-
-                PlanComercial entidad = mapDtoToEntity(dto);
-                List<PlanComercial> existentes = planRepository.findByCodigoPlan(entidad.getCodigoPlan());
-
-                if (existentes != null && !existentes.isEmpty()) {
-                    // UPDATE
-                    PlanComercial existente = existentes.get(0);
-                    entidad.setId(existente.getId());
-                    actualizados++;
-                } else {
-                    // INSERT
-                    nuevos++;
-                }
-                planRepository.save(entidad);
-
-            } catch (Exception e) {
-                errores++;
-                System.err.println("❌ Error procesando plan " + dto.getCodigoPlan() + ": " + e.getMessage());
-            }
-        }
-
-        response.put("mensaje", "✅ Proceso finalizado: " + nuevos + " nuevos planes agregados, " + actualizados + " actualizados.");
-        response.put("status", "ok");
-        return response;
-    }
-
-    @Override
     public List<PlanComercial> getAllPlanes() {
-        return planRepository.findAll();
+        return planRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
     }
+    /**
+    @Override
+    public List<PlanComercial> buscarPlanes(String termino) {
+        return planRepository.findAll();
+    }**/
+
 
     @Override
     public PlanComercial savePlan(PlanComercialDto dto) {
-        PlanComercial entidad = mapDtoToEntity(dto);
-        List<PlanComercial> existentes = planRepository.findByCodigoPlan(entidad.getCodigoPlan());
+        PlanComercial nuevo = new PlanComercial();
+        // Valores iniciales
+        nuevo.setPrestadores(new ArrayList<>());
+        nuevo.setVisible(true);
 
-        if (existentes != null && !existentes.isEmpty()) {
-            throw new RuntimeException("El código " + entidad.getCodigoPlan() + " ya existe.");
-        }
-        return planRepository.save(entidad);
+
+        actualizarDatosEntidad(dto, nuevo);
+
+        return planRepository.save(nuevo);
     }
 
-    // --- Mover el método helper aquí y hacerlo private ---
-    private PlanComercial mapDtoToEntity(PlanComercialDto dto) {
-        PlanComercial p = new PlanComercial();
-        p.setCodigoPlan(dto.getCodigoPlan());
-        p.setNombrePlan(dto.getNombrePlan());
-        p.setPlan(dto.getPlan());
-        p.setPrecioBase(dto.getPrecioBase());
-        p.setTopeAnualUf(dto.getTopeAnualUf());
-        p.setHospitalaria(dto.getHospitalaria());
-        p.setAmbulatoria(dto.getAmbulatoria());
-        p.setUrgencia(dto.getUrgencia());
-        p.setPuntaje(dto.getPuntaje());
-        // p.setPreferente(dto.getPreferente()); // Descomentar si agregas el campo al DTO
 
-        if (dto.getPrestadores() != null) {
-            p.setPrestadores(dto.getPrestadores());
+    @Override
+    public PlanComercial updatePlan(Long id, PlanComercialDto dto) {
+
+        PlanComercial existente = planRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Plan no encontrado con ID: " + id));
+
+
+        actualizarDatosEntidad(dto, existente);
+
+        return planRepository.save(existente);
+    }
+
+    @Override
+    public void deletePlan(Long id) {
+        if (planRepository.existsById(id)) {
+            planRepository.deleteById(id);
         } else {
-            p.setPrestadores(new ArrayList<>());
+            throw new RuntimeException("No se puede eliminar, el plan no existe.");
         }
-        return p;
+    }
+
+    @Override
+    public PlanComercial cambiarVisibilidad(Long id) {
+        PlanComercial plan = planRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Plan no encontrado"));
+        plan.setVisible(plan.getVisible() == null || !plan.getVisible());
+        return planRepository.save(plan);
+    }
+
+    @Override
+    public Map<String, Object> cargaMasiva(List<PlanComercialDto> planesDto) {
+        Map<String, Object> response = new HashMap<>();
+        int guardados = 0;
+        for (PlanComercialDto dto : planesDto) {
+            savePlan(dto); // Reutilizamos savePlan
+            guardados++;
+        }
+        response.put("mensaje", "Se cargaron " + guardados + " planes.");
+        return response;
+    }
+
+    // =========================================================
+    // ✅ EL MÉTODO MAGICO QUE ELIMINA EL CÓDIGO DUPLICADO
+    // =========================================================
+    private void actualizarDatosEntidad(PlanComercialDto dto, PlanComercial entidad) {
+        // 1. Campos básicos
+        entidad.setCodigoPlan(dto.getCodigoPlan());
+        entidad.setNombrePlan(dto.getNombrePlan()); // Isapre
+        entidad.setPlan(dto.getPlan());             // Nombre comercial
+        entidad.setPrecioBase(dto.getPrecioBase());
+        entidad.setTopeAnualUf(dto.getTopeAnualUf());
+        entidad.setHospitalaria(dto.getHospitalaria());
+        entidad.setAmbulatoria(dto.getAmbulatoria());
+        entidad.setUrgencia(dto.getUrgencia());
+
+
+        if (dto.getPreferente() != null) {
+            entidad.setPreferente(dto.getPreferente());
+        }
+
+
+        if (dto.getLogo() != null && !dto.getLogo().isEmpty()) {
+            entidad.setLogo(dto.getLogo());
+        } else {
+
+            entidad.setLogo(obtenerRutaLogo(dto.getNombrePlan()));
+        }
+    }
+
+    private String obtenerRutaLogo(String nombreIsapre) {
+        if (nombreIsapre == null) return "/default.png";
+        String key = nombreIsapre.toLowerCase().trim();
+
+        if (key.contains("consalud")) return "/consalud.png";
+        if (key.contains("colmena")) return "/colmena.png";
+        if (key.contains("banmedica")) return "/banmedica.png";
+        if (key.contains("cruz blanca") || key.contains("cruzblanca")) return "/cruzblanca.png";
+        if (key.contains("nueva masvida") || key.contains("masvida")) return "/nuevamasvida.png";
+        if (key.contains("vida tres") || key.contains("vidatres")) return "/vidatres.png";
+
+        return "/default.png";
     }
 }

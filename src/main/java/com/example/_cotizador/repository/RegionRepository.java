@@ -6,5 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RegionRepository extends JpaRepository<Region, Long> {
-    // No necesitamos métodos extra por ahora, con los básicos basta.
 }

@@ -20,7 +20,9 @@ public class RegionController {
 
     @Autowired
     private RegionRepository regionRepository;
-
+    /**
+     Enpoint para obtener las regiones
+     **/
     @GetMapping
     public List<RegionDto> obtenerTodas() {
         // Buscamos todas las regiones ordenadas por ID

@@ -5,10 +5,9 @@ import java.util.List;
 
 @Data
 public class PlanComercialDto {
-    // No ponemos el ID porque al cargar masivamente no suele venir
     private String codigoPlan;
-    private String nombrePlan; // Nombre de la Isapre
-    private String plan;       // Nombre comercial
+    private String nombrePlan;
+    private String plan;
     private Double precioBase;
     private Double puntaje;
     private Integer hospitalaria;
@@ -16,4 +15,7 @@ public class PlanComercialDto {
     private Integer ambulatoria;
     private Integer topeAnualUf;
     private List<String> prestadores;
+    private Boolean visible;
+    private String logo;
+    private Boolean preferente;
 }

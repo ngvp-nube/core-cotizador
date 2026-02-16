@@ -11,5 +11,15 @@ public interface PlanService {
 
     List<PlanComercial> getAllPlanes();
 
+    /**
+    List<PlanComercial> buscarPlanes(String termino);**/
+
     PlanComercial savePlan(PlanComercialDto planDto);
+
+    void deletePlan(Long id);
+
+    PlanComercial cambiarVisibilidad(Long id);
+
+    PlanComercial updatePlan(Long id, PlanComercialDto planDto);
+
 }

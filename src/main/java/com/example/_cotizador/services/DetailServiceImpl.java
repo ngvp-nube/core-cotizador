@@ -2,6 +2,7 @@ package com.example._cotizador.services;
 
 import com.example._cotizador.dto.DetallePlanDto;
 import com.example._cotizador.entity.DetallePlan;
+import com.example._cotizador.entity.PlanComercial;
 import com.example._cotizador.repository.DetallePlanRepository;
 import com.example._cotizador.services.builder.DetallePlanBuilder;
 import jakarta.transaction.Transactional;
@@ -18,7 +19,6 @@ public class DetailServiceImpl implements DetailService {
     private final DetallePlanRepository repository;
     private final DetallePlanBuilder builder;
 
-    // Ya no inyectamos PlanComercialRepository aquí
     public DetailServiceImpl(DetallePlanRepository repository, DetallePlanBuilder builder) {
         this.repository = repository;
         this.builder = builder;
@@ -76,4 +76,5 @@ public class DetailServiceImpl implements DetailService {
         }
         return listaGuardada;
     }
+
 }

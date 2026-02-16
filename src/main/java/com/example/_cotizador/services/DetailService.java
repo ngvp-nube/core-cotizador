@@ -8,7 +8,9 @@ import java.util.Optional;
 
 public interface DetailService {
 
-    // --- SOLO MÉTODOS DE DETALLE PLAN (PDFs) ---
+    /**
+     Aqui solo esta el metodo para subir los pdf
+     **/
 
     DetallePlan saveDetallePlan(DetallePlanDto dto);
 
@@ -24,4 +26,6 @@ public interface DetailService {
 
     @Transactional
     List<DetallePlan> saveDetallePlansMasivo(List<DetallePlanDto> dtos);
+
+
 }

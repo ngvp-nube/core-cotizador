@@ -14,29 +14,22 @@ public class PlanComercial {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(columnDefinition = "boolean default true")
+    private Boolean visible = true;
 
-    // Identificación
     @Column(unique = true)
     private String codigoPlan;
-
     private String nombrePlan;
     private String plan;
     private Boolean preferente;
     private String logo;
-
-    // Valores Económicos
     private Double precioBase;
     private Double puntaje;
-
-    // Coberturas
     private Integer hospitalaria;
     private Integer urgencia;
     private Integer ambulatoria;
     private Integer topeAnualUf;
 
-    // (imagenContrato ELIMINADO ✅)
-
-    // Lista de Clínicas
     @ElementCollection
     @CollectionTable(name = "plan_prestadores", joinColumns = @JoinColumn(name = "plan_id"))
     @Column(name = "prestador")

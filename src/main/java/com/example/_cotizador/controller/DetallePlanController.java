@@ -23,13 +23,18 @@ public class DetallePlanController {
     }
 
 
-    // Crear un detallePlan
+    /**
+     Enpoint para ingresar los contratos pdf masivamente
+     **/
     @PostMapping("/createdetail/masivo")
     public ResponseEntity<List<DetallePlan>> createDetallePlanMasivo(@RequestBody java.util.List<DetallePlanDto> dtos) {
         List<DetallePlan> saved = service.saveDetallePlansMasivo(dtos);
         return new ResponseEntity<>(saved, HttpStatus.CREATED);
     }
 
+    /**
+     Enpoint para obtener los contratos pdf
+     **/
     @GetMapping("/detalleplan/{codigo}/pdf")
     public ResponseEntity<byte[]> downloadPdf(@PathVariable String codigo) {
         DetallePlan plan = service.getByCodigo(codigo)
@@ -42,6 +47,10 @@ public class DetallePlanController {
                 .body(plan.getPdfData());
     }
 
+    /**
+     Enpoint para obtener los contratos y mostrarlos en el front
+     **/
+
     @GetMapping("/detalleplan/{codigo}/pdf/view")
     public ResponseEntity<byte[]> viewPdf(@PathVariable String codigo) {
         DetallePlan plan = service.getByCodigo(codigo)
@@ -53,7 +62,5 @@ public class DetallePlanController {
                         (plan.getFileName() != null ? plan.getFileName() : (codigo + ".pdf")) + "\"")
                 .body(plan.getPdfData());
     }
-
-
 
 }

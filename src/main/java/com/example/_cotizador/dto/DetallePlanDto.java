@@ -10,10 +10,8 @@ public class DetallePlanDto {
     @NotBlank(message = "El PDF en Base64 es obligatorio")
     private String pdfBase64;
 
-    // Opcional: para que el frontend muestre el nombre o para headers
     private String fileName;
 
-    // Opcional: si no viene, asumimos application/pdf
     private String contentType;
 
     public DetallePlanDto() {}

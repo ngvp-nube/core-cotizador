@@ -16,8 +16,6 @@ import lombok.NoArgsConstructor;
 public class Region {
 
     @Id
-    // NOTA: No usamos @GeneratedValue porque queremos asignar manualmente
-    // los IDs oficiales (1, 2... 13, 15, 16) para que coincidan con tu Front.
     private Long id;
 
     @Column(nullable = false, length = 100)
