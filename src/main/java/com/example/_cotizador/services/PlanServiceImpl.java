@@ -88,9 +88,6 @@ public class PlanServiceImpl implements PlanService {
         return response;
     }
 
-    // =========================================================
-    // ✅ EL MÉTODO MAGICO QUE ELIMINA EL CÓDIGO DUPLICADO
-    // =========================================================
     private void actualizarDatosEntidad(PlanComercialDto dto, PlanComercial entidad) {
         // 1. Campos básicos
         entidad.setCodigoPlan(dto.getCodigoPlan());
