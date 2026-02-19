@@ -26,6 +26,43 @@ public class PlanServiceImpl implements PlanService {
     public List<PlanComercial> getAllPlanes() {
         return planRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
     }
+
+    @Override
+    public Map<String, Object> getPlanesPaginados(int page, int size) {
+        // Obtener todos los planes ordenados
+        List<PlanComercial> todosLosPlanes = planRepository.findAll(Sort.by(Sort.Direction.ASC, "id"));
+        
+        // Calcular total de elementos
+        int totalElements = todosLosPlanes.size();
+        
+        // Calcular índices para paginación
+        int startIndex = page * size;
+        int endIndex = Math.min(startIndex + size, totalElements);
+        
+        // Validar que la página solicitada exista
+        if (startIndex >= totalElements && totalElements > 0) {
+            throw new IllegalArgumentException("La página solicitada no existe");
+        }
+        
+        // Obtener sublista para la página actual
+        List<PlanComercial> planesPagina = todosLosPlanes.subList(startIndex, endIndex);
+        
+        // Calcular total de páginas
+        int totalPages = (int) Math.ceil((double) totalElements / size);
+        
+        // Construir respuesta
+        Map<String, Object> response = new HashMap<>();
+        response.put("data", planesPagina);
+        response.put("currentPage", page);
+        response.put("pageSize", size);
+        response.put("totalElements", totalElements);
+        response.put("totalPages", totalPages);
+        response.put("first", page == 0);
+        response.put("last", page >= totalPages - 1);
+        
+        return response;
+    }
+
     /**
     @Override
     public List<PlanComercial> buscarPlanes(String termino) {

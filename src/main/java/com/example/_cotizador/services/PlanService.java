@@ -11,6 +11,8 @@ public interface PlanService {
 
     List<PlanComercial> getAllPlanes();
 
+    Map<String, Object> getPlanesPaginados(int page, int size);
+
     /**
     List<PlanComercial> buscarPlanes(String termino);**/
 
