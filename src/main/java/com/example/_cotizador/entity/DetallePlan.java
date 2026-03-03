@@ -1,13 +1,36 @@
 package com.example._cotizador.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
 
 
 @Entity
+@Table(
+        name = "detalle_plan",
+        indexes = {
+                @Index(name = "idx_detalle_plan_codigo", columnList = "codigo")
+        }
+)
 public class DetallePlan {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, unique = true, length = 50)
+    private String codigo;
+
+    @Column(name = "file_name", length = 255)
+    private String fileName;
+
+    @Column(name = "content_type", length = 100)
+    private String contentType;
+
+    @Basic(fetch = FetchType.LAZY)
+    @Column(name = "pdf_data", nullable = false, columnDefinition="bytea")
+    private byte[] pdfData;
+
+    public DetallePlan() {}
+
     public Long getId() {
         return id;
     }
@@ -24,22 +47,27 @@ public class DetallePlan {
         this.codigo = codigo;
     }
 
-    public String getFile() {
-        return file;
+    public String getFileName() {
+        return fileName;
     }
 
-    public void setFile(String file) {
-        this.file = file;
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    public String getContentType() {
+        return contentType;
+    }
 
-    @Column(name = "codigo", nullable = false, length = 50)
-    private String codigo;
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
 
-    @Column(name = "file", nullable = false, length = 255)
-    private String file;
+    public byte[] getPdfData() {
+        return pdfData;
+    }
 
+    public void setPdfData(byte[] pdfData) {
+        this.pdfData = pdfData;
+    }
 }
